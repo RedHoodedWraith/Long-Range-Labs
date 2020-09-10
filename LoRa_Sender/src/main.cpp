@@ -1,13 +1,38 @@
+/**
+ * Title: LoRa Sender
+ * This code was originally written by Sandeep Mistry.
+ * https://github.com/sandeepmistry/arduino-LoRa
+ */
+
 #include <Arduino.h>
-#define led 13
+#include <SPI.h>
+#include <LoRa.h>
+
+int counter = 0;
 
 void setup() {
-    pinMode(led, OUTPUT);
+    Serial.begin(9600);
+    while (!Serial);
+
+    Serial.println("LoRa Sender");
+
+    if (!LoRa.begin(915E6)) {
+        Serial.println("Starting LoRa failed!");
+        while (1);
+    }
 }
 
 void loop() {
-    digitalWrite(led, HIGH);
-    delay(1000);
-    digitalWrite(led, LOW);
-    delay(1000);
+    Serial.print("Sending packet: ");
+    Serial.println(counter);
+
+    // send packet
+    LoRa.beginPacket();
+    LoRa.print("hello ");
+    LoRa.print(counter);
+    LoRa.endPacket();
+
+    counter++;
+
+    delay(5000);
 }
